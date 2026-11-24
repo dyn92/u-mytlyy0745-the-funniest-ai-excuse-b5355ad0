@@ -17,6 +17,13 @@ EXCUSE = (
 
 
 def main() -> None:
+    # Gate guard: the sealed scorer only accepts UTF-8 text of 1-200
+    # characters, not only whitespace, on a single line. Fail loudly
+    # here rather than ever writing an entry the gate would refuse.
+    if not 1 <= len(EXCUSE) <= 200:
+        raise ValueError(f"excuse is {len(EXCUSE)} chars, must be 1-200")
+    if "\n" in EXCUSE or not EXCUSE.strip():
+        raise ValueError("excuse must be one non-blank line")
     output_dir = "/output"
     os.makedirs(output_dir, exist_ok=True)
     with open(os.path.join(output_dir, "entry.txt"), "w", encoding="utf-8") as f:
